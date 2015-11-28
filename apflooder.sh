@@ -10,7 +10,7 @@ RST=$(echo -e "\e[0;0;0m")
 fbssid(){
 	LIST=()
 	#Generate Random MAC Addresses For Our Access Points
-	for ((i=0;i<1000;i++))
+	for ((i=0;i<$NUM_OF_ESSIDS;i++))
 	do
 		LIST[$i]=$(openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//')
 	done
@@ -41,17 +41,21 @@ else
 	if [ ! -e $ESSID_FILE ]; then
 		printf $RED"[-] File does not exist.. exiting\n"$RST
 		exit
+	else
+		NUM_OF_ESSIDS=$(wc -l < $ESSID_FILE)
+		
 	fi
 fi 
 
 #continue our processing, seems like all is ok
 
 
-
 printf $GRN"\nThe NIC is "$RST$BLU"$CARD_NAME"$RST
 printf $GRN"\nThe essid file location is "$RST$BLU"$ESSID_FILE"$RST
-printf $GRN"\nMangler flag is set to "$RST$BLU"$MANGLER\n"$RST
-printf $GRN"\nThe word to be mangles flag is set to "$RST$BLU"$MANGLER\n"$RST
+printf $GRN"\nMangler flag is set to "$RST$BLU"$MANGLER"$RST
+printf $GRN"\nThe word to be mangles flag is set to "$RST$BLU"$MANGLE_WORD"$RST
+printf $GRN"\nThe # of lines in the file is "$RST$BLU"$NUM_OF_ESSIDS"$RST
+
 
 
 printf "\n"
