@@ -7,6 +7,16 @@ BLU=$(echo -e "\e[1;36m")
 GRN=$(echo -e "\e[1;32m")
 RST=$(echo -e "\e[0;0;0m")
 
+fbssid(){
+	LIST=()
+	#Generate Random MAC Addresses For Our Access Points
+	for ((i=0;i<1000;i++))
+	do
+		LIST[$i]=$(openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//')
+	done
+		
+}
+
 clear 
 printf $GRN"\nAccess Point Spammer - Flood Area with Fake Access Points\n"$RST
 printf $GRN"To get started, let's get some information first"$RST
