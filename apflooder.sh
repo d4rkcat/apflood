@@ -43,6 +43,9 @@ fapflood(){
 	
 	printf $GRN"\n[+] Started monitor mode on "$RST$BLU$NIC$RST
 	printf "\n"
+	printf $GRN"\n[+] The area is now flooded with your APs "$RST
+	printf $GRN"\n[+] Press Ctrl+C to stop the flooding and exit "$RST
+	printf $GRN"Open the logfile to check the logs for output of the script"
 	
 	#use this for WPA2 setups	
 	#airbase-ng -i $NIC -Z 2 -I 10 -c 1 -P --essids $ESSID_FILE --bssids BSSID_FILE -x 200 $NIC -F FRAMES_FILE > /dev/null
@@ -51,8 +54,7 @@ fapflood(){
 	airbase-ng -i $NIC -I 10 -c 6 -P --essids $ESSID_FILE --bssids BSSID_FILE -x 200 $NIC -F FRAMES_FILE >> logfile
 	
 	
-	printf $GRN"\n[+] The area is now flooded with your APs "$RST
-	printf $GRN"\n[+] Press Ctrl+C to stop the flooding and exit "$RST
+	
 	
 	
 	
@@ -104,6 +106,17 @@ fmangle()																#Mangle a word and get 30 permutations
 	MANGLED_FILE='mangled'
 }
 	
+fexit()																	#Clean temp files and exit
+{
+	echo
+	rm -rf tmpe 2> /dev/null
+	rm bssids 2> /dev/null
+	rm mangled 2> /dev/null
+	killall -9 airbase-ng 2> /dev/null
+	airmon-ng stop $MON1 | grep fff
+	echo $RED" [*] $MON1 has been shut down,$GRN Goodbye...$RST"
+	exit
+}
 
 
 fprompts(){
@@ -129,7 +142,6 @@ fprompts(){
 		NUM_OF_ESSIDS=$(wc -l < $ESSID_FILE)
 		fbssid
 		fapflood
-		printf "mangler is not workign yet"
 	else
 		#read access point file name/location
 		printf $BLU"\n[+] Enter the path to you ESSID file: "$RST
