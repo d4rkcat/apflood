@@ -10,8 +10,9 @@ RST=$(echo -e "\e[0;0;0m")
 fbssid(){
 	printf $GRN"[+] Generating BSSIDs ... Please wait.."$RST
 	BSSID_LIST=()
+	
 	#Generate Random MAC Addresses For Our Access Points
-	for ((i=0;i<$NUM_OF_ESSIDS;i++))
+	for ((i = 0; i <= $NUM_OF_ESSIDS; i++))
 	do
 		BSSID_LIST[$i]=$(openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//')
 	done
@@ -100,8 +101,7 @@ fmangle()																#Mangle a word and get 30 permutations
 
 	SORT=$(cat mangled | tr -d '\n')
 	echo "$SORT" | tr ' ' '\n' | tail -n +1 | uniq | head -n -1 > mangled
-	LIST='mangled'
-	cat LIST
+	MANGLED_FILE='mangled'
 }
 	
 
@@ -125,7 +125,8 @@ fprompts(){
 		#printf $BLU"[+] Enter the word you would like to mangle : "$RST
 		#read MANGLE_WORD
 		fmangle
-		ESSID_FILE=$LIST
+		ESSID_FILE=$MANGLED_FILE
+		NUM_OF_ESSIDS=$(wc -l < $ESSID_FILE)
 		fbssid
 		fapflood
 		printf "mangler is not workign yet"
