@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#Author : d4rkc4t
+#@Author - Wong Fei Zhu (13lk_n1nj4) - Interactive and or Kali2
+
 
 #Color formatters
 RED=$(echo -e "\e[1;31m")
@@ -7,12 +10,14 @@ BLU=$(echo -e "\e[1;36m")
 GRN=$(echo -e "\e[1;32m")
 RST=$(echo -e "\e[0;0;0m")
 
-fbssid(){
+
+fbssid(){	#Generate random mac addresses (same amount of ESSIDS in essid file)
+	
 	printf $GRN"[+] Generating BSSIDs ... Please wait.."$RST
 	BSSID_LIST=()
 	
 	#Generate Random MAC Addresses For Our Access Points
-	for ((i = 0; i <= $NUM_OF_ESSIDS; i++))
+	for ((i = 0; i <=$NUM_OF_ESSIDS ; i++))
 	do
 		BSSID_LIST[$i]=$(openssl rand -hex 6 | sed 's/\(..\)/\1:/g; s/.$//')
 	done
@@ -23,7 +28,6 @@ fbssid(){
 		#printf $i"\n"
 		echo $i >> BSSID_FILE
 	done
-	
 	
 		
 }
@@ -44,19 +48,13 @@ fapflood(){
 	printf $GRN"\n[+] Started monitor mode on "$RST$BLU$NIC$RST
 	printf "\n"
 	printf $GRN"\n[+] The area is now flooded with your APs "$RST
-	printf $GRN"\n[+] Press Ctrl+C to stop the flooding and exit "$RST
-	printf $GRN"Open the logfile to check the logs for output of the script"
 	
-	#use this for WPA2 setups	
-	#airbase-ng -i $NIC -Z 2 -I 10 -c 1 -P --essids $ESSID_FILE --bssids BSSID_FILE -x 200 $NIC -F FRAMES_FILE > /dev/null
-	
-	#use this for open setups
-	airbase-ng -i $NIC -I 10 -c 6 -P --essids $ESSID_FILE --bssids BSSID_FILE -x 200 $NIC -F FRAMES_FILE >> logfile
-	
-	
-	
-	
-	
+	#deploy the fake ap's
+	airbase-ng -i $NIC -Z 2 -I 10 -c 6 -P --essids $ESSID_FILE -x 200 $NIC -F CAPTURED_PACKETS | grep 'fff'&
+	sleep 0.5
+	echo
+	read -p $GRN"[*] Press Enter or Ctrl+C stop flooding and to clean up"
+	fexit
 	
 	
 }
@@ -109,12 +107,19 @@ fmangle()																#Mangle a word and get 30 permutations
 fexit()																	#Clean temp files and exit
 {
 	echo
-	rm -rf tmpe 2> /dev/null
-	rm bssids 2> /dev/null
+	
+	#remove all the generated files files
+	rm -rf tmpe 2> /dev/null 
+	rm BSSID_FILE 2> /dev/null
 	rm mangled 2> /dev/null
+	rm logfile 2> /dev/null
+	
+	#comment/uncomment to remove .cap file during cleanup
+	rm *.cap 2> /dev/null
+	
 	killall -9 airbase-ng 2> /dev/null
-	airmon-ng stop $MON1 | grep fff
-	echo $RED" [*] $MON1 has been shut down,$GRN Goodbye...$RST"
+	service network-manager restart 2> /dev/null
+	printf $RED"[*] $NIC has been shut down,$GRN Goodbye...\n$RST"
 	exit
 }
 
